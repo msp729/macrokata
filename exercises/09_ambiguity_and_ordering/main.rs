@@ -24,24 +24,34 @@ impl NumberType {
 
 // Sum together at least two expressions.
 macro_rules! sum {
-    ($($expr:expr),+ , $lastexpr:expr) => {
-        $($expr + )+ $lastexpr
+    ($e:expr, $($expr:expr),*) => {
+        $e$( + $expr)+
     }
 }
 
 macro_rules! get_number_type {
-    ( $e:expr ) => {
-        NumberType::UnknownBecauseExpr($e)
-    };
-    ( $block:block ) => {
-        NumberType::UnknownBecauseBlock($block)
+    ( -$negative:literal ) => {
+        NumberType::NegativeNumber(-$negative)
     };
     ( $positive:literal ) => {
         NumberType::PositiveNumber($positive)
     };
-    ( -$negative:literal ) => {
-        NumberType::NegativeNumber(-$negative)
+    ( $block:block ) => {
+        NumberType::UnknownBecauseBlock($block)
     };
+    ( $e:expr ) => {
+        NumberType::UnknownBecauseExpr($e)
+    };
+}
+
+#[allow(dead_code)]
+fn sample(x: NumberType) -> i32 {
+    match x {
+        NumberType::PositiveNumber(v) => v as i32,
+        NumberType::NegativeNumber(v) => v as i32,
+        NumberType::UnknownBecauseBlock(v) => v as i32,
+        NumberType::UnknownBecauseExpr(v) => v as i32,
+    }
 }
 
 ////////// DO NOT CHANGE BELOW HERE /////////
